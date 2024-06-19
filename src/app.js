@@ -11,18 +11,18 @@ app.post("/items", (req, res) => {
     const NewItem = req.body;
     
     if (!NewItem.name || !NewItem.quantity || !NewItem.type) {
-        res.sendStatus(422).send("As informações não foram enviadas corretamente!");
+        res.status(422).send('As informações não foram enviadas corretamente!');
         return;
     }  
     else if (items.some(item => item.name == NewItem.name)) {
-        res.sendStatus(409).send("Já existe um item com o mesmo nome!");
+        res.status(409).send('Já existe um item com o mesmo nome!');
         return;
     } else {
         items.push({
         id: items.length + 1,
         ...NewItem
         });
-        res.sendStatus(201).send("Seu item foi adicionado!");
+        return res.status(201).send("Seu item foi adicionado!");
     }       
 })
 
@@ -46,12 +46,17 @@ app.get('/items', (req, res) => {
 // pega o item pelo Id
 app.get('/items/:id', (req, res) => {
     const id = req.params.id
+    const NumeroId = Number(id);
+    console.log(NumeroId);
     const ItemsPorIds = items.find(item => {
         return item.id == Number(id)
     })
-    if (ItemsPorIds = []) {
-        return sendStatus(404);
-    } else {
+
+    if (Number.isInteger(NumeroId) && NumeroId > 0 == false) {
+        return res.sendStatus(400);
+    } else if (ItemsPorIds == null) {
+        return res.sendStatus(404);
+    }   else {
         return res.send(ItemsPorIds);
     }
     })
